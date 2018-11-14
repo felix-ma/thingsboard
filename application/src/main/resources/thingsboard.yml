@@ -38,7 +38,7 @@ zk:
   # Enable/disable zookeeper discovery service.
   enabled: "${ZOOKEEPER_ENABLED:false}"
   # Zookeeper connect string
-  url: "${ZOOKEEPER_URL:localhost:2181}"
+  url: "${ZOOKEEPER_URL:192.168.116.141:2181}"
   # Zookeeper retry interval in milliseconds
   retry_interval_ms: "${ZOOKEEPER_RETRY_INTERVAL_MS:3000}"
   # Zookeeper connection timeout in milliseconds
@@ -50,7 +50,7 @@ zk:
 
 # RPC connection parameters. Used only in cluster mode only.
 rpc:
-  bind_host: "${RPC_HOST:localhost}"
+  bind_host: "${RPC_HOST:192.168.2.230}"
   bind_port: "${RPC_PORT:9001}"
 
 # Clustering properties related to consistent-hashing. See architecture docs for more details.
@@ -71,8 +71,8 @@ plugins:
 security:
   # JWT Token parameters
   jwt:
-    tokenExpirationTime: "${JWT_TOKEN_EXPIRATION_TIME:900}" # Number of seconds (15 mins)
-    refreshTokenExpTime: "${JWT_REFRESH_TOKEN_EXPIRATION_TIME:3600}" # Seconds (1 hour)
+    tokenExpirationTime: "${JWT_TOKEN_EXPIRATION_TIME:15552000}" # Number of seconds (6 month)
+    refreshTokenExpTime: "${JWT_REFRESH_TOKEN_EXPIRATION_TIME:2592000}" # Seconds (1 month)
     tokenIssuer: "${JWT_TOKEN_ISSUER:thingsboard.io}"
     tokenSigningKey: "${JWT_TOKEN_SIGNING_KEY:thingsboardDefaultSigningKey}"
   # Enable/disable access to Tenant Administrators JWT token by System Administrator or Customer Users JWT token by Tenant Administrator
@@ -232,7 +232,7 @@ redis:
 # Check new version updates parameters
 updates:
   # Enable/disable updates checking.
-  enabled: "${UPDATES_ENABLED:true}"
+  enabled: "${UPDATES_ENABLED:false}"
 
 # spring CORS configuration
 spring.mvc.cors:
@@ -264,36 +264,36 @@ spring.resources.chain:
       enabled: "true"
 
 # HSQLDB DAO Configuration
-spring:
-  data:
-    jpa:
-      repositories:
-        enabled: "true"
-  jpa:
-    hibernate:
-      ddl-auto: "validate"
-    database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.HSQLDialect}"
-  datasource:
-    driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.hsqldb.jdbc.JDBCDriver}"
-    url: "${SPRING_DATASOURCE_URL:jdbc:hsqldb:file:${SQL_DATA_FOLDER:/tmp}/thingsboardDb;sql.enforce_size=false;hsqldb.log_size=5}"
-    username: "${SPRING_DATASOURCE_USERNAME:sa}"
-    password: "${SPRING_DATASOURCE_PASSWORD:}"
-
-# PostgreSQL DAO Configuration
-# spring:
+#spring:
 #  data:
-#    sql:
+#    jpa:
 #      repositories:
 #        enabled: "true"
-#  sql:
+#  jpa:
 #    hibernate:
 #      ddl-auto: "validate"
-#    database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}"
+#    database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.HSQLDialect}"
 #  datasource:
-#    driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
-#    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/thingsboard}"
-#    username: "${SPRING_DATASOURCE_USERNAME:postgres}"
-#    password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
+#    driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.hsqldb.jdbc.JDBCDriver}"
+#    url: "${SPRING_DATASOURCE_URL:jdbc:hsqldb:file:${SQL_DATA_FOLDER:/tmp}/thingsboardDb;sql.enforce_size=false;hsqldb.log_size=5}"
+#    username: "${SPRING_DATASOURCE_USERNAME:sa}"
+#    password: "${SPRING_DATASOURCE_PASSWORD:}"
+
+# PostgreSQL DAO Configuration
+spring:
+  data:
+    sql:
+      repositories:
+        enabled: "true"
+  sql:
+    hibernate:
+      ddl-auto: "validate"
+    database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}"
+  datasource:
+    driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tb1}"
+    username: "${SPRING_DATASOURCE_USERNAME:postgres}"
+    password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
 
 # Audit log parameters
 audit_log:
@@ -333,12 +333,12 @@ audit_log:
     password: "${AUDIT_LOG_SINK_PASSWORD:}"
 
 state:
-  defaultInactivityTimeoutInSec: "${DEFAULT_INACTIVITY_TIMEOUT:10}"
-  defaultStateCheckIntervalInSec: "${DEFAULT_STATE_CHECK_INTERVAL:10}"
+  defaultInactivityTimeoutInSec: "${DEFAULT_INACTIVITY_TIMEOUT:300}"
+  defaultStateCheckIntervalInSec: "${DEFAULT_STATE_CHECK_INTERVAL:150}"
 
 kafka:
   enabled: true
-  bootstrap.servers: "${TB_KAFKA_SERVERS:localhost:9092}"
+  bootstrap.servers: "${TB_KAFKA_SERVERS:198.216.3.172:9092}"
   acks: "${TB_KAFKA_ACKS:all}"
   retries: "${TB_KAFKA_RETRIES:1}"
   batch.size: "${TB_KAFKA_BATCH_SIZE:16384}"
