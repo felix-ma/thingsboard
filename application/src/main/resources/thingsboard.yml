@@ -99,6 +99,8 @@ security:
     tokenSigningKey: "${JWT_TOKEN_SIGNING_KEY:thingsboardDefaultSigningKey}"
   # Enable/disable access to Tenant Administrators JWT token by System Administrator or Customer Users JWT token by Tenant Administrator
   user_token_access_enabled: "${SECURITY_USER_TOKEN_ACCESS_ENABLED:true}"
+  # Enable/disable case-sensitive username login
+  user_login_case_sensitive: "${SECURITY_USER_LOGIN_CASE_SENSITIVE:true}"
 
 # Dashboard parameters
 dashboard:
@@ -437,6 +439,8 @@ transport:
   json:
     # Cast String data types to Numeric if possible when processing Telemetry/Attributes JSON
     type_cast_enabled: "${JSON_TYPE_CAST_ENABLED:true}"
+    # Maximum allowed string value length when processing Telemetry/Attributes JSON (0 value disables string value length check)
+    max_string_value_length: "${JSON_MAX_STRING_VALUE_LENGTH:0}"
   # Local HTTP transport parameters
   http:
     enabled: "${HTTP_ENABLED:true}"
