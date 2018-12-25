@@ -83,6 +83,7 @@
         <delight-nashorn-sandbox.version>0.1.14</delight-nashorn-sandbox.version>
         <kafka.version>2.0.0</kafka.version>
         <bucket4j.version>4.1.1</bucket4j.version>
+        <zookeeper.version>3.4.12</zookeeper.version>
     </properties>
 
     <modules>
@@ -318,10 +319,10 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.mycila</groupId>-->
+                <!--<artifactId>license-maven-plugin</artifactId>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
@@ -793,6 +794,11 @@
                 <groupId>com.github.vladimir-bukhtoyarov</groupId>
                 <artifactId>bucket4j-core</artifactId>
                 <version>${bucket4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
