@@ -59,8 +59,8 @@ module.exports = {
         }),
         new CopyWebpackPlugin([
             {
-                from: './src/thingsboard.ico',
-                to: 'thingsboard.ico'
+                from: './src/embrace.png',
+                to: 'embrace.png'
             },
             {
                 from: './src/app/locale',
@@ -75,7 +75,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html',
             filename: 'index.html',
-            title: 'ThingsBoard',
+            title: 'EmbraceIoT',
             inject: 'body',
         }),
         new StyleLintPlugin(),

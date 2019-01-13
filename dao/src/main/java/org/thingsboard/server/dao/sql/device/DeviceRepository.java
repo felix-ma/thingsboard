@@ -33,7 +33,7 @@ public interface DeviceRepository extends CrudRepository<DeviceEntity, String> {
 
     @Query("SELECT d FROM DeviceEntity d WHERE d.tenantId = :tenantId " +
             "AND d.customerId = :customerId " +
-            "AND LOWER(d.searchText) LIKE LOWER(CONCAT(:searchText, '%')) " +
+            "AND LOWER(d.searchText) LIKE LOWER(CONCAT('%' ,CONCAT(:searchText, '%'))) " +
             "AND d.id > :idOffset ORDER BY d.id")
     List<DeviceEntity> findByTenantIdAndCustomerId(@Param("tenantId") String tenantId,
                                                    @Param("customerId") String customerId,
@@ -42,7 +42,7 @@ public interface DeviceRepository extends CrudRepository<DeviceEntity, String> {
                                                    Pageable pageable);
 
     @Query("SELECT d FROM DeviceEntity d WHERE d.tenantId = :tenantId " +
-            "AND LOWER(d.searchText) LIKE LOWER(CONCAT(:textSearch, '%')) " +
+            "AND LOWER(d.searchText) LIKE LOWER(CONCAT('%' ,CONCAT(:textSearch, '%'))) " +
             "AND d.id > :idOffset ORDER BY d.id")
     List<DeviceEntity> findByTenantId(@Param("tenantId") String tenantId,
                                       @Param("textSearch") String textSearch,
@@ -51,7 +51,7 @@ public interface DeviceRepository extends CrudRepository<DeviceEntity, String> {
 
     @Query("SELECT d FROM DeviceEntity d WHERE d.tenantId = :tenantId " +
             "AND d.type = :type " +
-            "AND LOWER(d.searchText) LIKE LOWER(CONCAT(:textSearch, '%')) " +
+            "AND LOWER(d.searchText) LIKE LOWER(CONCAT('%' ,CONCAT(:textSearch, '%'))) " +
             "AND d.id > :idOffset ORDER BY d.id")
     List<DeviceEntity> findByTenantIdAndType(@Param("tenantId") String tenantId,
                                              @Param("type") String type,
@@ -62,7 +62,7 @@ public interface DeviceRepository extends CrudRepository<DeviceEntity, String> {
     @Query("SELECT d FROM DeviceEntity d WHERE d.tenantId = :tenantId " +
             "AND d.customerId = :customerId " +
             "AND d.type = :type " +
-            "AND LOWER(d.searchText) LIKE LOWER(CONCAT(:textSearch, '%')) " +
+            "AND LOWER(d.searchText) LIKE LOWER(CONCAT('%' ,CONCAT(:textSearch, '%'))) " +
             "AND d.id > :idOffset ORDER BY d.id")
     List<DeviceEntity> findByTenantIdAndCustomerIdAndType(@Param("tenantId") String tenantId,
                                                           @Param("customerId") String customerId,

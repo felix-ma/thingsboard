@@ -17,7 +17,7 @@ import $ from 'jquery';
 
 /* eslint-disable import/no-unresolved, import/default */
 
-import logoSvg from '../../svg/logo_title_white.svg';
+import logoSvg from '../../svg/embrace.svg';
 
 /* eslint-enable import/no-unresolved, import/default */
 
