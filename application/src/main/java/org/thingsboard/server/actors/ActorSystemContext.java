@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016-2018 The Thingsboard Authors
+ * Copyright © 2016-2019 The Thingsboard Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,7 @@ import org.thingsboard.server.service.encoding.DataDecodingEncodingService;
 import org.thingsboard.server.service.executors.ClusterRpcCallbackExecutorService;
 import org.thingsboard.server.service.executors.DbCallbackExecutorService;
 import org.thingsboard.server.service.executors.ExternalCallExecutorService;
+import org.thingsboard.server.service.executors.SharedEventLoopGroupService;
 import org.thingsboard.server.service.mail.MailExecutorService;
 import org.thingsboard.server.service.rpc.DeviceRpcService;
 import org.thingsboard.server.service.script.JsExecutorService;
@@ -205,6 +206,10 @@ public class ActorSystemContext {
     @Autowired
     @Getter
     private ExternalCallExecutorService externalCallExecutorService;
+
+    @Autowired
+    @Getter
+    private SharedEventLoopGroupService sharedEventLoopGroupService;
 
     @Autowired
     @Getter

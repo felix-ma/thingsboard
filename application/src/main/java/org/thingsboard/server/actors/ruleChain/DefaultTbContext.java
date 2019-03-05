@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016-2018 The Thingsboard Authors
+ * Copyright © 2016-2019 The Thingsboard Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.thingsboard.server.actors.ruleChain;
 
 import akka.actor.ActorRef;
 import com.datastax.driver.core.utils.UUIDs;
+import io.netty.channel.EventLoopGroup;
 import org.springframework.util.StringUtils;
 import org.thingsboard.rule.engine.api.ListeningExecutor;
 import org.thingsboard.rule.engine.api.MailService;
@@ -56,6 +57,7 @@ import org.thingsboard.server.service.script.RuleNodeJsScriptEngine;
 import scala.concurrent.duration.Duration;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -99,6 +101,12 @@ class DefaultTbContext implements TbContext {
     public void tellSelf(TbMsg msg, long delayMs) {
         //TODO: add persistence layer
         scheduleMsgWithDelay(new RuleNodeToSelfMsg(msg), delayMs, nodeCtx.getSelfActor());
+    }
+
+    @Override
+    public boolean isLocalEntity(EntityId entityId) {
+        Optional<ServerAddress> address = mainCtx.getRoutingService().resolveById(entityId);
+        return !address.isPresent();
     }
 
     private void scheduleMsgWithDelay(Object msg, long delayInMs, ActorRef target) {
@@ -236,6 +244,11 @@ class DefaultTbContext implements TbContext {
     @Override
     public RuleChainTransactionService getRuleChainTransactionService() {
         return mainCtx.getRuleChainTransactionService();
+    }
+
+    @Override
+    public EventLoopGroup getSharedEventLoop() {
+        return mainCtx.getSharedEventLoopGroupService().getSharedEventLoopGroup();
     }
 
     @Override

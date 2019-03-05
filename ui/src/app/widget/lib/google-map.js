@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 The Thingsboard Authors
+ * Copyright © 2016-2019 The Thingsboard Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -313,6 +313,74 @@ export default class TbGoogleMap {
     removePolyline(polyline) {
         polyline.setMap(null);
     }
+
+
+	createPolygon(latLangs, settings, location,  onClickListener, markerArgs) {
+		let polygon = new google.maps.Polygon({
+			map: this.map,
+			paths: latLangs,
+			strokeColor: settings.polygonStrokeColor,
+			strokeOpacity: settings.polygonStrokeColor,
+			fillColor: settings.polygonColor,
+			fillOpacity: settings.polygonOpacity,
+			strokeWeight: settings.polygonStrokeWeight
+		});
+
+		//initialize-tooltip
+
+		let popup = new google.maps.InfoWindow({
+			content: ''
+		});
+		if (!this.tooltips) this.tooltips = [];
+		this.tooltips.push({
+			markerArgs: markerArgs,
+			popup: popup,
+			locationSettings: settings,
+			dsIndex: location.dsIndex
+		});
+
+		if (onClickListener) {
+			google.maps.event.addListener(polygon, 'click', function (event) {
+				if (settings.displayTooltip) {
+					if (!polygon.anchor) {
+						polygon.anchor = new google.maps.MVCObject();
+					}
+					polygon.anchor.set("position", event.latLng);
+					popup.open(this.map, polygon.anchor);
+				}
+				onClickListener();
+			});
+		}
+		return polygon;
+	}
+	/* eslint-disable no-undef */
+
+	removePolygon (polygon) {
+		polygon.setMap(null);
+	}
+
+	/* eslint-disable no-undef,no-unused-vars */
+	updatePolygonColor (polygon, settings, color) {
+		let options = {
+			paths: polygon.getPaths(),
+			map: this.map,
+			strokeColor: color,
+			fillColor: color,
+			strokeWeight: settings.polygonStrokeWeight
+		};
+		polygon.setOptions(options);
+	}
+	/* eslint-disable no-undef ,no-unused-vars*/
+
+
+	getPolygonLatLngs(polygon) {
+		return polygon.getPaths().getArray();
+	}
+
+	setPolygonLatLngs(polygon, latLngs) {
+		polygon.setPaths(latLngs);
+	}
+
 
     /* eslint-disable no-undef */
     fitBounds(bounds) {
