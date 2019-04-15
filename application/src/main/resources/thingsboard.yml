@@ -328,7 +328,7 @@ spring:
     database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}"
   datasource:
     driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
-    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tb}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tb-bjx}"
     username: "${SPRING_DATASOURCE_USERNAME:postgres}"
     password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
 
@@ -370,7 +370,7 @@ audit-log:
     password: "${AUDIT_LOG_SINK_PASSWORD:}"
 
 state:
-  defaultInactivityTimeoutInSec: "${DEFAULT_INACTIVITY_TIMEOUT:10}"
+  defaultInactivityTimeoutInSec: "${DEFAULT_INACTIVITY_TIMEOUT:300}"
   defaultStateCheckIntervalInSec: "${DEFAULT_STATE_CHECK_INTERVAL:10}"
 
 kafka:
@@ -406,7 +406,9 @@ js:
     # Maximum CPU time in milliseconds allowed for script execution
     max_cpu_time: "${LOCAL_JS_SANDBOX_MAX_CPU_TIME:100}"
     # Maximum allowed JavaScript execution errors before JavaScript will be blacklisted
-    max_errors: "${LOCAL_JS_SANDBOX_MAX_ERRORS:3}"
+    max_errors: "${LOCAL_JS_SANDBOX_MAX_ERRORS:50}"
+    # When not blacklisted, running this number correctly and continuously removes the blacklist
+    remove_blacklists_threshold: "${LOCAL_JS_SANDBOX_REMOVE_BLACKLISTS_THRESHOLD:1}"
   # Remote JavaScript environment properties
   remote:
     # JS Eval request topic

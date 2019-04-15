@@ -32,6 +32,7 @@ public abstract class AbstractJsInvokeService implements JsInvokeService {
 
     protected Map<UUID, String> scriptIdToNameMap = new ConcurrentHashMap<>();
     protected Map<UUID, AtomicInteger> blackListedFunctions = new ConcurrentHashMap<>();
+    protected Map<UUID, AtomicInteger> whiteListedFunctions = new ConcurrentHashMap<>();
 
     @Override
     public ListenableFuture<UUID> eval(JsScriptType scriptType, String scriptBody, String... argNames) {
@@ -62,6 +63,7 @@ public abstract class AbstractJsInvokeService implements JsInvokeService {
             try {
                 scriptIdToNameMap.remove(scriptId);
                 blackListedFunctions.remove(scriptId);
+                whiteListedFunctions.remove(scriptId);
                 doRelease(scriptId, functionName);
             } catch (Exception e) {
                 return Futures.immediateFailedFuture(e);
@@ -79,6 +81,7 @@ public abstract class AbstractJsInvokeService implements JsInvokeService {
     protected abstract int getMaxErrors();
 
     protected void onScriptExecutionError(UUID scriptId) {
+        whiteListedFunctions.remove(scriptId);
         blackListedFunctions.computeIfAbsent(scriptId, key -> new AtomicInteger(0)).incrementAndGet();
     }
 

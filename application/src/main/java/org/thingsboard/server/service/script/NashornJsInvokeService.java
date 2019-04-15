@@ -37,6 +37,9 @@ public class NashornJsInvokeService extends AbstractNashornJsInvokeService {
     @Value("${js.local.max_errors}")
     private int maxErrors;
 
+    @Value("${js.local.remove_blacklists_threshold}")
+    private int removeBlacklistsThreshold;
+
     @Override
     protected boolean useJsSandbox() {
         return useJsSandbox;
@@ -55,5 +58,10 @@ public class NashornJsInvokeService extends AbstractNashornJsInvokeService {
     @Override
     protected int getMaxErrors() {
         return maxErrors;
+    }
+
+    @Override
+    protected int getRemoveBlacklistsThreshold() {
+        return removeBlacklistsThreshold;
     }
 }

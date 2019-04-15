@@ -30,6 +30,7 @@ import javax.script.ScriptException;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public abstract class AbstractNashornJsInvokeService extends AbstractJsInvokeService {
@@ -92,10 +93,18 @@ public abstract class AbstractNashornJsInvokeService extends AbstractJsInvokeSer
             } else {
                 result = ((Invocable) engine).invokeFunction(functionName, args);
             }
+            onScriptExecutionSuccess(scriptId);
             return Futures.immediateFuture(result);
         } catch (Exception e) {
             onScriptExecutionError(scriptId);
             return Futures.immediateFailedFuture(e);
+        }
+    }
+
+    protected void onScriptExecutionSuccess(UUID scriptId) {
+        whiteListedFunctions.computeIfAbsent(scriptId, key -> new AtomicInteger(0)).incrementAndGet();
+        if (isWhiteListed(scriptId)) {
+            blackListedFunctions.remove(scriptId);
         }
     }
 
@@ -104,6 +113,17 @@ public abstract class AbstractNashornJsInvokeService extends AbstractJsInvokeSer
             sandbox.eval(functionName + " = undefined;");
         } else {
             engine.eval(functionName + " = undefined;");
+        }
+    }
+
+    protected abstract int getRemoveBlacklistsThreshold();
+
+    private boolean isWhiteListed(UUID scriptId) {
+        if (whiteListedFunctions.containsKey(scriptId)) {
+            AtomicInteger successCount = whiteListedFunctions.get(scriptId);
+            return successCount.get() >= getRemoveBlacklistsThreshold();
+        } else {
+            return false;
         }
     }
 
