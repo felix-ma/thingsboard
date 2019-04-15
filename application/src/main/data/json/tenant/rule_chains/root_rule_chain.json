@@ -3,7 +3,7 @@
     "additionalInfo": null,
     "name": "Root Rule Chain",
     "firstRuleNodeId": null,
-    "root": true,
+    "root": false,
     "debugMode": false,
     "configuration": null
   },

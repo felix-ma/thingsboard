@@ -1,0 +1,213 @@
+{
+  "ruleChain": {
+    "additionalInfo": null,
+    "name": "Felix Rule Chain",
+    "firstRuleNodeId": null,
+    "root": true,
+    "debugMode": false,
+    "configuration": null
+  },
+  "metadata": {
+    "firstNodeIndex": 2,
+    "nodes": [
+      {
+        "additionalInfo": {
+          "layoutX": 1165,
+          "layoutY": 485
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save Timeseries",
+        "debugMode": true,
+        "configuration": {
+          "defaultTTL": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 1173,
+          "layoutY": 255
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save Client Attributes",
+        "debugMode": false,
+        "configuration": {
+          "scope": "CLIENT_SCOPE"
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 101,
+          "layoutY": 370
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbMsgTypeSwitchNode",
+        "name": "Message Type Switch",
+        "debugMode": false,
+        "configuration": {
+          "version": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 406,
+          "layoutY": 135
+        },
+        "type": "org.thingsboard.rule.engine.action.TbLogNode",
+        "name": "Log RPC from Device",
+        "debugMode": false,
+        "configuration": {
+          "jsScript": "return '\\nIncoming message:\\n' + JSON.stringify(msg) + '\\nIncoming metadata:\\n' + JSON.stringify(metadata);"
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 1096,
+          "layoutY": 367
+        },
+        "type": "org.thingsboard.rule.engine.action.TbLogNode",
+        "name": "Log Other",
+        "debugMode": false,
+        "configuration": {
+          "jsScript": "return '\\nIncoming message:\\n' + JSON.stringify(msg) + '\\nIncoming metadata:\\n' + JSON.stringify(metadata);"
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 396,
+          "layoutY": 24
+        },
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "RPC Call Request",
+        "debugMode": false,
+        "configuration": {
+          "timeoutInSeconds": 60
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 666,
+          "layoutY": 246
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "判断是否是attributesJsonData",
+        "debugMode": false,
+        "configuration": {
+          "jsScript": "if(msg.attributesJsonData){\n    return true;\n}\nreturn false;"
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 660,
+          "layoutY": 486
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "判断是否是timeseriesJsonData",
+        "debugMode": false,
+        "configuration": {
+          "jsScript": "if(msg.timeseriesJsonData){\n    return true;\n}\nreturn false;"
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 865,
+          "layoutY": 610
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "遥测数据改为timeseriesJsonData",
+        "debugMode": false,
+        "configuration": {
+          "jsScript": "var data = {},\n    type;\nvar keyName = \"@Name\"\nif (msg.timeseriesJsonData) {\n    var result = {};\n    if (isJson(msg.timeseriesJsonData)) {\n        convertKV(msg.timeseriesJsonData, \"\", keyName,\n            result);\n    } else {\n        convertKV(JSON.parse(msg.timeseriesJsonData), \"\",\n            keyName,\n            result);\n    }\n    data = result;\n}\nif (msg.timeseriesJsonType) {\n    type = msg.timeseriesJsonType;\n    for (var k in data) {\n        data[type + '_' + k] = data[k];\n        delete data[k];\n    }\n}\nif (msg.ErrorCode) {\n    data.ErrorCode = msg.ErrorCode;\n}\nif (msg.ErrorMessage) {\n    data.ErrorMessage = msg.ErrorMessage;\n}\nreturn {\n    msg: data,\n    metadata: metadata,\n    msgType: msgType\n};\n\nfunction convertKV(jsonObj, parentKey, keyName, result) {\n    if (isJson(jsonObj) == 0) {\n        // 字符串，取消分隔符\n        result[parentKey.substring(0, parentKey.length - 1)] =\n            jsonObj;\n        return;\n    }\n    for (var key in jsonObj) {\n        var itemkey = key;\n        var val = jsonObj[itemkey];\n        // 过滤为null的数据\n        if (!val) {\n            continue;\n        }\n        // 对象\n        if (isJson(val) == 1) {\n            convertKV(val, parentKey + itemkey + \"_\",\n                keyName, result);\n        }\n        // 数组对象\n        else if (isJson(val) == 2) {\n            for (var i = 0; i < val.length; i++) {\n                var valElement = val[i];\n                var item = i;\n                if (valElement[keyName]) {\n                    item = valElement[keyName];\n                }\n                convertKV(valElement, parentKey + itemkey +\n                    \"_\" + item + \"_\", keyName, result);\n            }\n        }\n        // 值\n        else {\n            result[parentKey + itemkey] = val;\n        }\n    }\n}\n\nfunction isJson(obj) {\n    // json对象\n    if (obj && Object.prototype.toString.call(obj).toLowerCase() ==\n        \"[object object]\" && !obj.length) {\n        return 1;\n    } else\n        // json数组\n        if (obj && typeof(obj) == \"object\" && obj.length) {\n            return 2;\n        }\n    // 值\n    else {\n        return 0;\n    }\n}"
+        }
+      },
+      {
+        "additionalInfo": {
+          "layoutX": 879,
+          "layoutY": 114
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "属性值数据改为attributesJsonData",
+        "debugMode": false,
+        "configuration": {
+          "jsScript": "var data = {},\n    type;\nvar keyName = \"@Name\"\nif (msg.attributesJsonData) {\n    var result = {};\n    if (isJson(msg.attributesJsonData)) {\n        convertKV(msg.attributesJsonData, \"\", keyName,\n            result);\n    } else {\n        convertKV(JSON.parse(msg.attributesJsonData), \"\",\n            keyName,\n            result);\n    }\n    data = result;\n}\nif (msg.attributesJsonType) {\n    type = msg.attributesJsonType;\n    for (var k in data) {\n        data[type + '_' + k] = data[k];\n        delete data[k];\n    }\n}\nif (msg.ErrorCode) {\n    data.ErrorCode = msg.ErrorCode;\n}\nif (msg.ErrorMessage) {\n    data.ErrorMessage = msg.ErrorMessage;\n}\nreturn {\n    msg: data,\n    metadata: metadata,\n    msgType: msgType\n};\n\nfunction convertKV(jsonObj, parentKey, keyName, result) {\n    if (isJson(jsonObj) == 0) {\n        // 字符串，取消分隔符\n        result[parentKey.substring(0, parentKey.length - 1)] =\n            jsonObj;\n        return;\n    }\n    for (var key in jsonObj) {\n        var itemkey = key;\n        var val = jsonObj[itemkey];\n        // 过滤为null的数据\n        if (!val) {\n            continue;\n        }\n        // 对象\n        if (isJson(val) == 1) {\n            convertKV(val, parentKey + itemkey + \"_\",\n                keyName, result);\n        }\n        // 数组对象\n        else if (isJson(val) == 2) {\n            for (var i = 0; i < val.length; i++) {\n                var valElement = val[i];\n                var item = i;\n                if (valElement[keyName]) {\n                    item = valElement[keyName];\n                }\n                convertKV(valElement, parentKey + itemkey +\n                    \"_\" + item + \"_\", keyName, result);\n            }\n        }\n        // 值\n        else {\n            result[parentKey + itemkey] = val;\n        }\n    }\n}\n\nfunction isJson(obj) {\n    // json对象\n    if (obj && Object.prototype.toString.call(obj).toLowerCase() ==\n        \"[object object]\" && !obj.length) {\n        return 1;\n    } else\n        // json数组\n        if (obj && typeof(obj) == \"object\" && obj.length) {\n            return 2;\n        }\n    // 值\n    else {\n        return 0;\n    }\n}"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 2,
+        "toIndex": 4,
+        "type": "Other"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 6,
+        "type": "Post attributes"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 7,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 3,
+        "type": "RPC Request from Device"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 5,
+        "type": "RPC Request to Device"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 4,
+        "type": "Failure"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 1,
+        "type": "False"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 9,
+        "type": "True"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 4,
+        "type": "Failure"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 0,
+        "type": "False"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 8,
+        "type": "True"
+      },
+      {
+        "fromIndex": 8,
+        "toIndex": 4,
+        "type": "Failure"
+      },
+      {
+        "fromIndex": 8,
+        "toIndex": 0,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 4,
+        "type": "Failure"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 1,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}
