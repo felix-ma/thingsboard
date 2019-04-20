@@ -101,7 +101,7 @@ POPD
 
 %BASE%${pkg.name}.exe install
 
-@ECHO ThingsBoard installed successfully!
+@ECHO ${pkg.name} installed successfully!
 
 GOTO END
 

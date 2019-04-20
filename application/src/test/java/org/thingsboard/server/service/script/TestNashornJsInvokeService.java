@@ -46,6 +46,11 @@ public class TestNashornJsInvokeService extends AbstractNashornJsInvokeService {
     }
 
     @Override
+    protected int getRemoveBlacklistsThreshold() {
+        return 1;
+    }
+
+    @Override
     protected int getMaxErrors() {
         return maxErrors;
     }

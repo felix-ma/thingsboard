@@ -45,7 +45,7 @@ server:
       max_subscriptions_per_customer: "${TB_SERVER_WS_TENANT_RATE_LIMITS_MAX_SUBSCRIPTIONS_PER_CUSTOMER:0}"
       max_subscriptions_per_regular_user: "${TB_SERVER_WS_TENANT_RATE_LIMITS_MAX_SUBSCRIPTIONS_PER_REGULAR_USER:0}"
       max_subscriptions_per_public_user: "${TB_SERVER_WS_TENANT_RATE_LIMITS_MAX_SUBSCRIPTIONS_PER_PUBLIC_USER:0}"
-      max_updates_per_session: "${TB_SERVER_WS_TENANT_RATE_LIMITS_MAX_UPDATES_PER_SESSION:300:1,3000:60}"
+      max_updates_per_session: "${TB_SERVER_WS_TENANT_RATE_LIMITS_MAX_UPDATES_PER_SESSION:500:1,5000:60}"
   rest:
     limits:
       tenant:
@@ -97,8 +97,8 @@ security:
   jwt:
     tokenExpirationTime: "${JWT_TOKEN_EXPIRATION_TIME:900}" # Number of seconds (15 mins)
     refreshTokenExpTime: "${JWT_REFRESH_TOKEN_EXPIRATION_TIME:3600}" # Seconds (1 hour)
-    tokenIssuer: "${JWT_TOKEN_ISSUER:thingsboard.io}"
-    tokenSigningKey: "${JWT_TOKEN_SIGNING_KEY:thingsboardDefaultSigningKey}"
+    tokenIssuer: "${JWT_TOKEN_ISSUER:EmbraceSource}"
+    tokenSigningKey: "${JWT_TOKEN_SIGNING_KEY:Pixiu-IoT}"
   # Enable/disable access to Tenant Administrators JWT token by System Administrator or Customer Users JWT token by Tenant Administrator
   user_token_access_enabled: "${SECURITY_USER_TOKEN_ACCESS_ENABLED:true}"
   # Enable/disable case-sensitive username login
@@ -225,7 +225,7 @@ actors:
       duration: "${ACTORS_RULE_TRANSACTION_DURATION:15000}"
   statistics:
     # Enable/disable actor statistics
-    enabled: "${ACTORS_STATISTICS_ENABLED:true}"
+    enabled: "${ACTORS_STATISTICS_ENABLED:false}"
     persist_frequency: "${ACTORS_STATISTICS_PERSIST_FREQUENCY:3600000}"
   queue:
     # Enable/disable persistence of un-processed messages to the queue
@@ -272,7 +272,7 @@ redis:
 # Check new version updates parameters
 updates:
   # Enable/disable updates checking.
-  enabled: "${UPDATES_ENABLED:true}"
+  enabled: "${UPDATES_ENABLED:false}"
 
 # spring CORS configuration
 spring.mvc.cors:
@@ -327,7 +327,7 @@ spring:
     database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}"
   datasource:
     driverClassName: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
-    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tb-bjx}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/pixiu}"
     username: "${SPRING_DATASOURCE_USERNAME:postgres}"
     password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
 
@@ -370,7 +370,7 @@ audit-log:
 
 state:
   defaultInactivityTimeoutInSec: "${DEFAULT_INACTIVITY_TIMEOUT:300}"
-  defaultStateCheckIntervalInSec: "${DEFAULT_STATE_CHECK_INTERVAL:10}"
+  defaultStateCheckIntervalInSec: "${DEFAULT_STATE_CHECK_INTERVAL:30}"
 
 kafka:
   enabled: true
