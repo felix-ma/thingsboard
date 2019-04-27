@@ -26,9 +26,9 @@
     <artifactId>application</artifactId>
     <packaging>jar</packaging>
 
-    <name>ThingsBoard Server Application</name>
-    <url>https://thingsboard.io</url>
-    <description>Open-source IoT Platform - Device management, data collection, processing and visualization
+    <name>PiXiu-Iot Server Application</name>
+    <url>https://embracesource.com</url>
+    <description>IoT Platform - Device management, data collection, processing and visualization
     </description>
 
     <properties>
